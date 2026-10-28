@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>어르신을 위한 쉬운 키오스크</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #fff8e8;
+    color: #222;
+    font-size: 22px;
+  }
+
+  header {
+    background: #164e63;
+    color: white;
+    text-align: center;
+    padding: 25px 15px;
+  }
+
+  h1 {
+    font-size: 36px;
+    margin: 0 0 10px;
+  }
+
+  header p {
+    margin: 0;
+    font-size: 23px;
+  }
+
+  main {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+  }
+
+  .voice-area {
+    background: white;
+    border: 3px solid #164e63;
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  button {
+    font-family: inherit;
+    font-size: 23px;
+    font-weight: bold;
+    padding: 17px;
+    border: 3px solid #164e63;
+    border-radius: 12px;
+    cursor: pointer;
+    min-height: 65px;
+  }
+
+  button:focus {
+    outline: 5px solid #f59e0b;
+    outline-offset: 3px;
+  }
+
+  .voice-button {
+    background: #164e63;
+    color: white;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .menu-title {
+    font-size: 30px;
+    margin-bottom: 15px;
+  }
+
+  .menus {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+  }
+
+  .food {
+    background: white;
+    border: 3px solid #d6c8a8;
+    border-radius: 16px;
+    padding: 20px 10px;
+    text-align: center;
+  }
+
+  .emoji {
+    font-size: 55px;
+  }
+
+  .food h3 {
+    font-size: 25px;
+    margin: 10px 0;
+  }
+
+  .price {
+    font-size: 22px;
+    margin: 10px 0;
+  }
+
+  .add-button {
+    width: 100%;
+    background: #ffdf85;
+    color: #222;
+    margin-top: 8px;
+  }
+
+  .order-area {
+    background: white;
+    border: 3px solid #164e63;
+    border-radius: 16px;
+    margin-top: 25px;
+    padding: 20px;
+  }
+
+  #cart {
+    line-height: 1.8;
+    white-space: pre-line;
+  }
+
+  .total {
+    font-size: 29px;
+    font-weight: bold;
+    margin: 20px 0;
+  }
+
+  .checkout-button {
+    background: #166534;
+    color: white;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .clear-button {
+    background: white;
+    color: #222;
+    width: 100%;
+  }
+
+  #message {
+    font-weight: bold;
+    color: #164e63;
+    line-height: 1.6;
+  }
+
+  footer {
+    text-align: center;
+    padding: 25px;
+    font-size: 18px;
+  }
+
+  @media (max-width: 480px) {
+    h1 {
+      font-size: 29px;
+    }
+
+    .menus {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+
+<body>
+<header>
+  <h1>😊 쉬운 키오스크</h1>
+  <p>천천히, 편하게 주문하세요!</p>
+</header>
+
+<main>
+  <section class="voice-area">
+    <h2>🔊 음성 안내</h2>
+    <p id="message" aria-live="polite">
+      안녕하세요! 원하시는 음식을 선택해 주세요.
+    </p>
+    <button class="voice-button" onclick="readGuide()">
+      🔊 음성으로 안내 듣기
+    </button>
+  </section>
+
+  <h2 class="menu-title">🍽️ 메뉴 선택</h2>
+
+  <section class="menus">
+    <article class="food">
+      <div class="emoji">☕</div>
+      <h3>따뜻한 커피</h3>
+      <p class="price">2,000원</p>
+      <button class="add-button"
+        onclick="addItem('따뜻한 커피', 2000)">
+        커피 선택
+      </button>
+    </article>
+
+    <article class="food">
+      <div class="emoji">🍵</div>
+      <h3>녹차</h3>
+      <p class="price">2,000원</p>
+      <button class="add-button"
+        onclick="addItem('녹차', 2000)">
+        녹차 선택
+      </button>
+    </article>
+
+    <article class="food">
+      <div class="emoji">🥪</div>
+      <h3>샌드위치</h3>
+      <p class="price">4,000원</p>
+      <button class="add-button"
+        onclick="addItem('샌드위치', 4000)">
+        샌드위치 선택
+      </button>
+    </article>
+
+    <article class="food">
+      <div class="emoji">🍰</div>
+      <h3>케이크</h3>
+      <p class="price">3,500원</p>
+      <button class="add-button"
+        onclick="addItem('케이크', 3500)">
+        케이크 선택
+      </button>
+    </article>
+  </section>
+
+  <section class="order-area">
+    <h2>🛒 주문 확인</h2>
+    <div id="cart" aria-live="polite">아직 선택한 메뉴가 없습니다.</div>
+
+    <p class="total">
+      총 금액: <span id="total">0</span>원
+    </p>
+
+    <button class="checkout-button" onclick="checkout()">
+      주문 확인하기
+    </button>
+
+    <button class="clear-button" onclick="clearCart()">
+      처음부터 다시 하기
+    </button>
+  </section>
+</main>
+
+<footer>
+  누구나 쉽고 편하게 사용할 수 있는 키오스크
+</footer>
+
+<script>
+  const cart = {};
+  let total = 0;
+
+  function speak(text) {
+    document.getElementById("message").textContent = text;
+
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+
+      const speech = new SpeechSynthesisUtterance(text);
+      speech.lang = "ko-KR";
+      speech.rate = 0.85;
+
+      window.speechSynthesis.speak(speech);
+    }
+  }
+
+  function readGuide() {
+    speak(
+      "안녕하세요. 쉬운 키오스크입니다. " +
+      "원하는 음식 아래의 선택 버튼을 눌러 주세요. " +
+      "주문 확인하기 버튼을 누르면 선택한 메뉴와 금액을 확인할 수 있습니다."
+    );
+  }
+
+  function addItem(name, price) {
+    if (!cart[name]) {
+      cart[name] = { price: price, count: 0 };
+    }
+
+    cart[name].count++;
+    total += price;
+
+    updateCart();
+
+    speak(name + "을 선택했습니다. 현재 총 금액은 " +
+      total.toLocaleString("ko-KR") + "원입니다.");
+  }
+
+  function updateCart() {
+    const cartElement = document.getElementById("cart");
+    const items = Object.entries(cart)
+      .filter(([name, item]) => item.count > 0);
+
+    if (items.length === 0) {
+      cartElement.textContent = "아직 선택한 메뉴가 없습니다.";
+    } else {
+      cartElement.textContent = items.map(([name, item]) =>
+        name + " " + item.count + "개, " +
+        (item.price * item.count).toLocaleString("ko-KR") + "원"
+      ).join("\n");
+    }
+
+    document.getElementById("total").textContent =
+      total.toLocaleString("ko-KR");
+  }
+
+  function checkout() {
+    if (total === 0) {
+      speak("아직 선택한 메뉴가 없습니다. 먼저 메뉴를 선택해 주세요.");
+      return;
+    }
+
+    const ok = confirm(
+      "주문 내역을 확인해 주세요.\n\n" +
+      document.getElementById("cart").textContent +
+      "\n\n총 금액: " + total.toLocaleString("ko-KR") +
+      "원\n\n이 주문을 확인할까요?"
+    );
+
+    if (ok) {
+      speak("주문 확인이 완료되었습니다. 이용해 주셔서 감사합니다.");
+      alert("주문 확인 완료!\n이 키오스크는 연습용이며 실제 결제는 진행되지 않습니다.");
+    } else {
+      speak("주문을 다시 확인해 주세요.");
+    }
+  }
+
+  function clearCart() {
+    for (const name in cart) {
+      delete cart[name];
+    }
+
+    total = 0;
+    updateCart();
+    speak("주문 내역을 초기화했습니다. 메뉴를 다시 선택해 주세요.");
+  }
+</script>
+</body>
+</html>
